@@ -4,11 +4,14 @@ export const ADD_ORDER = 'ADD_ORDER';
 export const SET_ORDERS = 'SET_ORDERS';
 
 export const fetchOrders = () => {
-    return async dispatch => {
+    return async (dispatch, getState) => {
 
         try {
+
+            const userId = getState().auth.userId;
+
             const response = await fetch(
-                'https://rm-complete-guide-6ed9e.firebaseio.com/orders/u1.json'
+                `https://rm-complete-guide-6ed9e.firebaseio.com/orders/${userId}.json`
             );
 
             //If unauth, 400, 500...
@@ -40,11 +43,14 @@ export const fetchOrders = () => {
 
 export const addOrder = (cartItems, totalAmount) => {
 
-    return async dispatch => {
+    return async (dispatch, getState) => {
 
         const date = new Date();
 
-        const response = await fetch('https://rm-complete-guide-6ed9e.firebaseio.com/orders/u1.json', {
+        const token = getState().auth.token;
+        const userId = getState().auth.userId;
+
+        const response = await fetch(`https://rm-complete-guide-6ed9e.firebaseio.com/orders/${userId}.json?auth=${token}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -62,7 +68,7 @@ export const addOrder = (cartItems, totalAmount) => {
             throw new Error('Something went wrong');
         }
 
-        return dispatch({
+        dispatch({
             type: ADD_ORDER,
             orderData: {
                 id: resData.name,
