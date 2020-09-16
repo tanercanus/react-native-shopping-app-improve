@@ -30,14 +30,14 @@ const ProductsOverviewScreen = props => {
 
     //Below works after every navigation, from drawer navigation or stack navigation
     useEffect(()=> {
-        const willFocusSubscription = props.navigation.addListener('willFocus', () => {
+        const unsubscribe = props.navigation.addListener('focus', () => {
             loadProducts();            
         });
 
         // below is clean up function
         return () => {
             //It will remove every new render
-            willFocusSubscription.remove();
+            unsubscribe();
         };
 
     }, [loadProducts]);
@@ -121,7 +121,7 @@ const ProductsOverviewScreen = props => {
     );
 };
 
-ProductsOverviewScreen.navigationOptions = navData => {
+export const screenOptions = navData => {
     return {
         headerTitle: 'All Products',
         headerLeft: () => (
